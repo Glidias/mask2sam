@@ -5,9 +5,9 @@ Converts any batch of grayscale MASK images consisting of any number of contiguo
 
 Make sure your mask image inputs are lossless for this, to ensure exact intended colors are used as below:
 
-Black 0: Shape for positive point
-White 255: Do Nothing
-In-between 1 to 254: Shape for negative point
+- Black 0: Shape for positive point
+- White 255: Do Nothing
+- In-between 1 to 254: Shape for negative point
 
 The resulting outputs can be used for https://github.com/kijai/ComfyUI-segment-anything-2/ SAM2 segmentation
 
