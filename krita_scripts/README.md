@@ -1,0 +1,1 @@
+Sample Krita python scripts and API workflows
