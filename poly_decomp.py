@@ -283,6 +283,31 @@ def polygonGetCutEdges(polygon):
 
     return mins
 
+def polygonsToBboxList(polygons):
+    """Converts a list of polygons to a list of bounding boxes.
+
+    Keyword arguments:
+    polygons -- The list of polygons
+
+    Returns:
+    A list of bounding boxes, each represented as [minX, minY, maxX, maxY].
+    """
+    bboxes = []
+    for poly in polygons:
+        minX = minY = float('inf')
+        maxX = maxY = float('-inf')
+        for p in poly:
+            if p[0] < minX:
+                minX = p[0]
+            if p[0] > maxX:
+                maxX = p[0]
+            if p[1] < minY:
+                minY = p[1]
+            if p[1] > maxY:
+                maxY = p[1]
+        bboxes.append([minX, minY, maxX, maxY])
+    return bboxes
+
 
 def polygonDecomp(polygon):
     """Decomposes the polygon into one or more convex sub-polygons.
@@ -567,3 +592,4 @@ def scalar_eq(a, b, precision=0):
     True if scalars are equal within precision
     """
     return abs(a - b) <= precision
+
