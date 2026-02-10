@@ -1,0 +1,1402 @@
+{
+  "30": {
+    "inputs": {
+      "mask": [
+        "77",
+        0
+      ]
+    },
+    "class_type": "MaskToImage",
+    "_meta": {
+      "title": "Convert Mask to Image"
+    }
+  },
+  "33": {
+    "inputs": {
+      "value": "WORKING_FOLDER_LOCATION"
+    },
+    "class_type": "PrimitiveString",
+    "_meta": {
+      "title": "working folder location"
+    }
+  },
+  "34": {
+    "inputs": {
+      "a": [
+        "33",
+        0
+      ],
+      "b": "/input_src"
+    },
+    "class_type": "JWStringConcat",
+    "_meta": {
+      "title": "String Concatenate"
+    }
+  },
+  "35": {
+    "inputs": {
+      "directory": [
+        "34",
+        0
+      ],
+      "image_load_cap": 0,
+      "start_index": 0,
+      "load_always": true,
+      "sort_method": "Alphabetical (ASC)"
+    },
+    "class_type": "LoadImagesFromDir //Inspire",
+    "_meta": {
+      "title": "Load Image Batch From Dir (Inspire)"
+    }
+  },
+  "40": {
+    "inputs": {
+      "path_pattern": [
+        "41",
+        0
+      ],
+      "start_index": 0,
+      "overwrite": "true",
+      "images": [
+        "30",
+        0
+      ]
+    },
+    "class_type": "JWSaveImageSequence",
+    "_meta": {
+      "title": "Batch Save Image Sequence"
+    }
+  },
+  "41": {
+    "inputs": {
+      "a": [
+        "33",
+        0
+      ],
+      "b": "/output/{:06d}.png"
+    },
+    "class_type": "JWStringConcat",
+    "_meta": {
+      "title": "String Concatenate"
+    }
+  },
+  "46": {
+    "inputs": {
+      "expand": [
+        "64",
+        0
+      ],
+      "incremental_expandrate": 0,
+      "tapered_corners": [
+        "68",
+        0
+      ],
+      "flip_input": false,
+      "blur_radius": 0,
+      "lerp_alpha": 1,
+      "decay_factor": 1,
+      "fill_holes": [
+        "61",
+        0
+      ],
+      "mask": [
+        "186",
+        0
+      ]
+    },
+    "class_type": "GrowMaskWithBlur",
+    "_meta": {
+      "title": "Grow Mask With Blur"
+    }
+  },
+  "50": {
+    "inputs": {
+      "a": [
+        "33",
+        0
+      ],
+      "b": "/meta.json"
+    },
+    "class_type": "JWStringConcat",
+    "_meta": {
+      "title": "String Concatenate"
+    }
+  },
+  "51": {
+    "inputs": {
+      "file_path": [
+        "50",
+        0
+      ],
+      "dictionary_name": "[filename]"
+    },
+    "class_type": "Load Text File",
+    "_meta": {
+      "title": "Load meta.json File"
+    }
+  },
+  "53": {
+    "inputs": {
+      "json_input": [
+        "51",
+        0
+      ],
+      "key": "expand"
+    },
+    "class_type": "JSONKeyCheckerNode",
+    "_meta": {
+      "title": "JSON Key Checker"
+    }
+  },
+  "54": {
+    "inputs": {
+      "json_input": [
+        "51",
+        0
+      ],
+      "key": "tapered_corners"
+    },
+    "class_type": "JSONKeyCheckerNode",
+    "_meta": {
+      "title": "JSON Key Checker"
+    }
+  },
+  "55": {
+    "inputs": {
+      "json_input": [
+        "51",
+        0
+      ],
+      "key": "invert_mask"
+    },
+    "class_type": "JSONKeyCheckerNode",
+    "_meta": {
+      "title": "JSON Key Checker"
+    }
+  },
+  "56": {
+    "inputs": {
+      "json_input": [
+        "51",
+        0
+      ],
+      "key": "fill_holes"
+    },
+    "class_type": "JSONKeyCheckerNode",
+    "_meta": {
+      "title": "JSON Key Checker"
+    }
+  },
+  "57": {
+    "inputs": {
+      "text": [
+        "56",
+        1
+      ]
+    },
+    "class_type": "CR String To Boolean",
+    "_meta": {
+      "title": "🔧 CR String To Boolean"
+    }
+  },
+  "58": {
+    "inputs": {
+      "text": [
+        "55",
+        1
+      ]
+    },
+    "class_type": "CR String To Boolean",
+    "_meta": {
+      "title": "🔧 CR String To Boolean"
+    }
+  },
+  "59": {
+    "inputs": {
+      "cond": [
+        "55",
+        0
+      ],
+      "tt_value": [
+        "58",
+        0
+      ],
+      "ff_value": [
+        "60",
+        0
+      ]
+    },
+    "class_type": "ImpactConditionalBranch",
+    "_meta": {
+      "title": "ImpactConditionalBranch"
+    }
+  },
+  "60": {
+    "inputs": {
+      "value": true
+    },
+    "class_type": "BOOLConstant",
+    "_meta": {
+      "title": "true"
+    }
+  },
+  "61": {
+    "inputs": {
+      "cond": [
+        "56",
+        0
+      ],
+      "tt_value": [
+        "57",
+        0
+      ],
+      "ff_value": [
+        "56",
+        0
+      ]
+    },
+    "class_type": "ImpactConditionalBranch",
+    "_meta": {
+      "title": "ImpactConditionalBranch"
+    }
+  },
+  "63": {
+    "inputs": {
+      "value": 0
+    },
+    "class_type": "INTConstant",
+    "_meta": {
+      "title": "0"
+    }
+  },
+  "64": {
+    "inputs": {
+      "cond": [
+        "53",
+        0
+      ],
+      "tt_value": [
+        "65",
+        0
+      ],
+      "ff_value": [
+        "63",
+        0
+      ]
+    },
+    "class_type": "ImpactConditionalBranch",
+    "_meta": {
+      "title": "ImpactConditionalBranch"
+    }
+  },
+  "65": {
+    "inputs": {
+      "text": [
+        "53",
+        1
+      ]
+    },
+    "class_type": "JWStringToInteger",
+    "_meta": {
+      "title": "String to Integer"
+    }
+  },
+  "67": {
+    "inputs": {
+      "text": [
+        "54",
+        1
+      ]
+    },
+    "class_type": "CR String To Boolean",
+    "_meta": {
+      "title": "🔧 CR String To Boolean"
+    }
+  },
+  "68": {
+    "inputs": {
+      "cond": [
+        "54",
+        0
+      ],
+      "tt_value": [
+        "67",
+        0
+      ],
+      "ff_value": [
+        "54",
+        0
+      ]
+    },
+    "class_type": "ImpactConditionalBranch",
+    "_meta": {
+      "title": "ImpactConditionalBranch"
+    }
+  },
+  "76": {
+    "inputs": {
+      "mask": [
+        "199",
+        0
+      ]
+    },
+    "class_type": "InvertMask",
+    "_meta": {
+      "title": "InvertMask"
+    }
+  },
+  "77": {
+    "inputs": {
+      "cond": [
+        "59",
+        0
+      ],
+      "tt_value": [
+        "76",
+        0
+      ],
+      "ff_value": [
+        "199",
+        0
+      ]
+    },
+    "class_type": "ImpactConditionalBranch",
+    "_meta": {
+      "title": "ImpactConditionalBranch"
+    }
+  },
+  "78": {
+    "inputs": {
+      "json_input": [
+        "51",
+        0
+      ],
+      "key": "use_bboxes"
+    },
+    "class_type": "JSONKeyCheckerNode",
+    "_meta": {
+      "title": "JSON Key Checker"
+    }
+  },
+  "80": {
+    "inputs": {
+      "cond": [
+        "78",
+        0
+      ],
+      "tt_value": [
+        "81",
+        0
+      ],
+      "ff_value": [
+        "78",
+        0
+      ]
+    },
+    "class_type": "ImpactConditionalBranch",
+    "_meta": {
+      "title": "ImpactConditionalBranch"
+    }
+  },
+  "81": {
+    "inputs": {
+      "text": [
+        "78",
+        1
+      ]
+    },
+    "class_type": "CR String To Boolean",
+    "_meta": {
+      "title": "🔧 CR String To Boolean"
+    }
+  },
+  "104": {
+    "inputs": {
+      "json_input": [
+        "51",
+        0
+      ],
+      "key": "coordinates_positive"
+    },
+    "class_type": "JSONKeyCheckerNode",
+    "_meta": {
+      "title": "JSON Key Checker"
+    }
+  },
+  "105": {
+    "inputs": {
+      "json_input": [
+        "51",
+        0
+      ],
+      "key": "coordinates_negative"
+    },
+    "class_type": "JSONKeyCheckerNode",
+    "_meta": {
+      "title": "JSON Key Checker"
+    }
+  },
+  "107": {
+    "inputs": {
+      "model_file": "SeC-4B-fp16.safetensors",
+      "device": "auto",
+      "use_flash_attn": true,
+      "allow_mask_overlap": true
+    },
+    "class_type": "SeCModelLoader",
+    "_meta": {
+      "title": "SeC Model Loader"
+    }
+  },
+  "108": {
+    "inputs": {
+      "positive_points": [
+        "136",
+        0
+      ],
+      "negative_points": [
+        "135",
+        0
+      ],
+      "tracking_direction": "bidirectional",
+      "annotation_frame_idx": [
+        "125",
+        0
+      ],
+      "object_id": 1,
+      "max_frames_to_track": -1,
+      "mllm_memory_size": 12,
+      "offload_video_to_cpu": false,
+      "auto_unload_model": [
+        "172",
+        0
+      ],
+      "model": [
+        "107",
+        0
+      ],
+      "frames": [
+        "35",
+        0
+      ]
+    },
+    "class_type": "SeCVideoSegmentation",
+    "_meta": {
+      "title": "SeC Video Segmentation"
+    }
+  },
+  "109": {
+    "inputs": {
+      "value": "[]"
+    },
+    "class_type": "PrimitiveString",
+    "_meta": {
+      "title": "empty array"
+    }
+  },
+  "110": {
+    "inputs": {
+      "cond": [
+        "104",
+        0
+      ],
+      "tt_value": [
+        "104",
+        1
+      ],
+      "ff_value": [
+        "109",
+        0
+      ]
+    },
+    "class_type": "ImpactConditionalBranch",
+    "_meta": {
+      "title": "ImpactConditionalBranch +"
+    }
+  },
+  "111": {
+    "inputs": {
+      "cond": [
+        "105",
+        0
+      ],
+      "tt_value": [
+        "105",
+        1
+      ],
+      "ff_value": [
+        "109",
+        0
+      ]
+    },
+    "class_type": "ImpactConditionalBranch",
+    "_meta": {
+      "title": "ImpactConditionalBranch -"
+    }
+  },
+  "112": {
+    "inputs": {
+      "positive_points": [
+        "136",
+        0
+      ],
+      "negative_points": [
+        "135",
+        0
+      ],
+      "tracking_direction": "bidirectional",
+      "annotation_frame_idx": [
+        "125",
+        0
+      ],
+      "object_id": 1,
+      "max_frames_to_track": -1,
+      "mllm_memory_size": 12,
+      "offload_video_to_cpu": false,
+      "auto_unload_model": [
+        "172",
+        0
+      ],
+      "model": [
+        "107",
+        0
+      ],
+      "frames": [
+        "35",
+        0
+      ],
+      "bbox": [
+        "127",
+        0
+      ]
+    },
+    "class_type": "SeCVideoSegmentation",
+    "_meta": {
+      "title": "SeC Video Segmentation + bbox"
+    }
+  },
+  "113": {
+    "inputs": {
+      "positive_points": [
+        "136",
+        0
+      ],
+      "negative_points": [
+        "135",
+        0
+      ],
+      "tracking_direction": "bidirectional",
+      "annotation_frame_idx": [
+        "125",
+        0
+      ],
+      "object_id": 1,
+      "max_frames_to_track": -1,
+      "mllm_memory_size": 12,
+      "offload_video_to_cpu": false,
+      "auto_unload_model": [
+        "172",
+        0
+      ],
+      "model": [
+        "107",
+        0
+      ],
+      "frames": [
+        "35",
+        0
+      ],
+      "input_mask": [
+        "158",
+        0
+      ]
+    },
+    "class_type": "SeCVideoSegmentation",
+    "_meta": {
+      "title": "SeC Video Segmentation + mask"
+    }
+  },
+  "115": {
+    "inputs": {
+      "channel": "red",
+      "image": [
+        "121",
+        0
+      ]
+    },
+    "class_type": "ImageToMask",
+    "_meta": {
+      "title": "Convert Image to Mask"
+    }
+  },
+  "117": {
+    "inputs": {
+      "a": [
+        "33",
+        0
+      ],
+      "b": "/input_mask"
+    },
+    "class_type": "JWStringConcat",
+    "_meta": {
+      "title": "String Concatenate"
+    }
+  },
+  "118": {
+    "inputs": {
+      "individual_objects": false,
+      "mask": [
+        "115",
+        0
+      ]
+    },
+    "class_type": "MaskToPoints",
+    "_meta": {
+      "title": "📍 Mask to Points"
+    }
+  },
+  "120": {
+    "inputs": {
+      "file_path": [
+        "117",
+        0
+      ],
+      "file_name": "mask",
+      "file_extension": "png"
+    },
+    "class_type": "easy isFileExist",
+    "_meta": {
+      "title": "Is File Exist"
+    }
+  },
+  "121": {
+    "inputs": {
+      "image": [
+        "122",
+        0
+      ],
+      "custom_width": 0,
+      "custom_height": 0
+    },
+    "class_type": "VHS_LoadImagePath",
+    "_meta": {
+      "title": "Load Image (Path) 🎥🅥🅗🅢"
+    }
+  },
+  "122": {
+    "inputs": {
+      "a": [
+        "117",
+        0
+      ],
+      "b": "/mask.png"
+    },
+    "class_type": "JWStringConcat",
+    "_meta": {
+      "title": "String Concatenate"
+    }
+  },
+  "124": {
+    "inputs": {
+      "json_input": [
+        "51",
+        0
+      ],
+      "key": "annotation_frame_idx"
+    },
+    "class_type": "JSONKeyCheckerNode",
+    "_meta": {
+      "title": "annotation_frame_idx"
+    }
+  },
+  "125": {
+    "inputs": {
+      "text": [
+        "124",
+        1
+      ]
+    },
+    "class_type": "JWStringToInteger",
+    "_meta": {
+      "title": "annotation_frame_idx int"
+    }
+  },
+  "126": {
+    "inputs": {
+      "mask": [
+        "115",
+        0
+      ]
+    },
+    "class_type": "InvertMask",
+    "_meta": {
+      "title": "InvertMask"
+    }
+  },
+  "127": {
+    "inputs": {
+      "invert": false,
+      "mask": [
+        "158",
+        0
+      ]
+    },
+    "class_type": "Bbox From Mask (mtb)",
+    "_meta": {
+      "title": "Bbox From Mask (mtb)"
+    }
+  },
+  "132": {
+    "inputs": {
+      "boolean": [
+        "105",
+        0
+      ]
+    },
+    "class_type": "Logic NOT",
+    "_meta": {
+      "title": "Logic NOT negative json"
+    }
+  },
+  "133": {
+    "inputs": {
+      "operator": "and",
+      "a": [
+        "132",
+        0
+      ],
+      "b": [
+        "120",
+        0
+      ]
+    },
+    "class_type": "LayerUtility: BooleanOperator",
+    "_meta": {
+      "title": "-"
+    }
+  },
+  "135": {
+    "inputs": {
+      "cond": [
+        "149",
+        0
+      ],
+      "tt_value": [
+        "118",
+        1
+      ],
+      "ff_value": [
+        "111",
+        0
+      ]
+    },
+    "class_type": "ImpactConditionalBranch",
+    "_meta": {
+      "title": "ImpactConditionalBranch --"
+    }
+  },
+  "136": {
+    "inputs": {
+      "cond": [
+        "149",
+        0
+      ],
+      "tt_value": [
+        "118",
+        0
+      ],
+      "ff_value": [
+        "110",
+        0
+      ]
+    },
+    "class_type": "ImpactConditionalBranch",
+    "_meta": {
+      "title": "ImpactConditionalBranch ++"
+    }
+  },
+  "141": {
+    "inputs": {
+      "json_input": [
+        "51",
+        0
+      ],
+      "key": "use_bbox_or_mask"
+    },
+    "class_type": "JSONKeyCheckerNode",
+    "_meta": {
+      "title": "JSON Key Checker"
+    }
+  },
+  "142": {
+    "inputs": {
+      "text": [
+        "141",
+        1
+      ]
+    },
+    "class_type": "JWStringToInteger",
+    "_meta": {
+      "title": "use_bbox_or_mask"
+    }
+  },
+  "144": {
+    "inputs": {
+      "file_path": [
+        "117",
+        0
+      ],
+      "file_name": "selection_mask",
+      "file_extension": "png"
+    },
+    "class_type": "easy isFileExist",
+    "_meta": {
+      "title": "Is File Exist"
+    }
+  },
+  "145": {
+    "inputs": {
+      "comparison": "==",
+      "a": [
+        "142",
+        0
+      ],
+      "b": [
+        "146",
+        0
+      ]
+    },
+    "class_type": "SimpleComparison+",
+    "_meta": {
+      "title": "🔧 Simple Comparison"
+    }
+  },
+  "146": {
+    "inputs": {
+      "value": 0
+    },
+    "class_type": "INTConstant",
+    "_meta": {
+      "title": "0"
+    }
+  },
+  "147": {
+    "inputs": {
+      "boolean": [
+        "145",
+        0
+      ]
+    },
+    "class_type": "Logic NOT",
+    "_meta": {
+      "title": "use_bbox_or_mask !=0"
+    }
+  },
+  "148": {
+    "inputs": {
+      "operator": "or",
+      "a": [
+        "144",
+        0
+      ],
+      "b": [
+        "145",
+        0
+      ]
+    },
+    "class_type": "LayerUtility: BooleanOperator",
+    "_meta": {
+      "title": "use mask.png as pts if available"
+    }
+  },
+  "149": {
+    "inputs": {
+      "operator": "and",
+      "a": [
+        "148",
+        0
+      ],
+      "b": [
+        "120",
+        0
+      ]
+    },
+    "class_type": "LayerUtility: BooleanOperator",
+    "_meta": {
+      "title": "use mask.png as pts"
+    }
+  },
+  "150": {
+    "inputs": {
+      "operator": "or",
+      "a": [
+        "104",
+        0
+      ],
+      "b": [
+        "147",
+        0
+      ]
+    },
+    "class_type": "LayerUtility: BooleanOperator",
+    "_meta": {
+      "title": "mask.png as bbox/mask if avail"
+    }
+  },
+  "151": {
+    "inputs": {
+      "a": [
+        "117",
+        0
+      ],
+      "b": "/selection_mask.png"
+    },
+    "class_type": "JWStringConcat",
+    "_meta": {
+      "title": "String Concatenate"
+    }
+  },
+  "152": {
+    "inputs": {
+      "image": [
+        "151",
+        0
+      ],
+      "custom_width": 0,
+      "custom_height": 0
+    },
+    "class_type": "VHS_LoadImagePath",
+    "_meta": {
+      "title": "Load Image (Path) 🎥🅥🅗🅢"
+    }
+  },
+  "153": {
+    "inputs": {
+      "channel": "red",
+      "image": [
+        "152",
+        0
+      ]
+    },
+    "class_type": "ImageToMask",
+    "_meta": {
+      "title": "Convert Image to Mask"
+    }
+  },
+  "155": {
+    "inputs": {
+      "operator": "and",
+      "a": [
+        "120",
+        0
+      ],
+      "b": [
+        "150",
+        0
+      ]
+    },
+    "class_type": "LayerUtility: BooleanOperator",
+    "_meta": {
+      "title": "use mask.png as bbox/mask"
+    }
+  },
+  "156": {
+    "inputs": {
+      "operator": "or",
+      "a": [
+        "144",
+        0
+      ],
+      "b": [
+        "155",
+        0
+      ]
+    },
+    "class_type": "LayerUtility: BooleanOperator",
+    "_meta": {
+      "title": "has mask select reference"
+    }
+  },
+  "158": {
+    "inputs": {
+      "cond": [
+        "144",
+        0
+      ],
+      "tt_value": [
+        "153",
+        0
+      ],
+      "ff_value": [
+        "126",
+        0
+      ]
+    },
+    "class_type": "ImpactConditionalBranch",
+    "_meta": {
+      "title": "ref mask asset"
+    }
+  },
+  "159": {
+    "inputs": {
+      "value": 2
+    },
+    "class_type": "INTConstant",
+    "_meta": {
+      "title": "2"
+    }
+  },
+  "160": {
+    "inputs": {
+      "comparison": "==",
+      "a": [
+        "142",
+        0
+      ],
+      "b": [
+        "159",
+        0
+      ]
+    },
+    "class_type": "SimpleComparison+",
+    "_meta": {
+      "title": "use_bbox_or_mask ==2"
+    }
+  },
+  "163": {
+    "inputs": {
+      "operator": "and",
+      "a": [
+        "156",
+        0
+      ],
+      "b": [
+        "160",
+        0
+      ]
+    },
+    "class_type": "LayerUtility: BooleanOperator",
+    "_meta": {
+      "title": "and"
+    }
+  },
+  "172": {
+    "inputs": {
+      "value": [
+        "179",
+        0
+      ]
+    },
+    "class_type": "PrimitiveBoolean",
+    "_meta": {
+      "title": "auto_unload_model ?"
+    }
+  },
+  "175": {
+    "inputs": {
+      "json_input": [
+        "51",
+        0
+      ],
+      "key": "auto_unload_model"
+    },
+    "class_type": "JSONKeyCheckerNode",
+    "_meta": {
+      "title": "JSON Key Checker"
+    }
+  },
+  "177": {
+    "inputs": {
+      "text": [
+        "175",
+        1
+      ]
+    },
+    "class_type": "CR String To Boolean",
+    "_meta": {
+      "title": "🔧 CR String To Boolean"
+    }
+  },
+  "178": {
+    "inputs": {
+      "value": true
+    },
+    "class_type": "PrimitiveBoolean",
+    "_meta": {
+      "title": "true"
+    }
+  },
+  "179": {
+    "inputs": {
+      "cond": [
+        "175",
+        0
+      ],
+      "tt_value": [
+        "177",
+        0
+      ],
+      "ff_value": [
+        "178",
+        0
+      ]
+    },
+    "class_type": "ImpactConditionalBranch",
+    "_meta": {
+      "title": "ImpactConditionalBranch"
+    }
+  },
+  "186": {
+    "inputs": {
+      "cond": [
+        "163",
+        0
+      ],
+      "tt_value": [
+        "113",
+        0
+      ],
+      "ff_value": [
+        "187",
+        0
+      ]
+    },
+    "class_type": "ImpactConditionalBranch",
+    "_meta": {
+      "title": "ImpactConditionalBranch"
+    }
+  },
+  "187": {
+    "inputs": {
+      "cond": [
+        "156",
+        0
+      ],
+      "tt_value": [
+        "112",
+        0
+      ],
+      "ff_value": [
+        "108",
+        0
+      ]
+    },
+    "class_type": "ImpactConditionalBranch",
+    "_meta": {
+      "title": "ImpactConditionalBranch"
+    }
+  },
+  "188": {
+    "inputs": {
+      "json_input": [
+        "51",
+        0
+      ],
+      "key": "output_aabb_regions"
+    },
+    "class_type": "JSONKeyCheckerNode",
+    "_meta": {
+      "title": "JSON Key Checker"
+    }
+  },
+  "189": {
+    "inputs": {
+      "cond": [
+        "188",
+        0
+      ],
+      "tt_value": [
+        "190",
+        0
+      ],
+      "ff_value": [
+        "192",
+        0
+      ]
+    },
+    "class_type": "ImpactConditionalBranch",
+    "_meta": {
+      "title": "ImpactConditionalBranch"
+    }
+  },
+  "190": {
+    "inputs": {
+      "text": [
+        "188",
+        1
+      ]
+    },
+    "class_type": "CR String To Boolean",
+    "_meta": {
+      "title": "🔧 CR String To Boolean"
+    }
+  },
+  "191": {
+    "inputs": {
+      "padding": [
+        "202",
+        0
+      ],
+      "constraints": "ignore",
+      "constraint_x": 64,
+      "constraint_y": 64,
+      "min_width": 0,
+      "min_height": 0,
+      "batch_behavior": "match_size",
+      "mask": [
+        "195",
+        0
+      ]
+    },
+    "class_type": "Mask To Region",
+    "_meta": {
+      "title": "Mask To Region"
+    }
+  },
+  "192": {
+    "inputs": {
+      "value": false
+    },
+    "class_type": "PrimitiveBoolean",
+    "_meta": {
+      "title": "false"
+    }
+  },
+  "194": {
+    "inputs": {
+      "mask": [
+        "46",
+        0
+      ]
+    },
+    "class_type": "MaskToImage",
+    "_meta": {
+      "title": "Convert Mask to Image"
+    }
+  },
+  "195": {
+    "inputs": {
+      "batch_size": 1,
+      "images": [
+        "194",
+        0
+      ]
+    },
+    "class_type": "RebatchImages",
+    "_meta": {
+      "title": "Rebatch Images"
+    }
+  },
+  "196": {
+    "inputs": {
+      "image": [
+        "191",
+        0
+      ]
+    },
+    "class_type": "ImageListToBatch+",
+    "_meta": {
+      "title": "🔧 Image List To Batch"
+    }
+  },
+  "198": {
+    "inputs": {
+      "channel": "red",
+      "image": [
+        "206",
+        0
+      ]
+    },
+    "class_type": "ImageToMask",
+    "_meta": {
+      "title": "Convert Image to Mask"
+    }
+  },
+  "199": {
+    "inputs": {
+      "cond": [
+        "189",
+        0
+      ],
+      "tt_value": [
+        "198",
+        0
+      ],
+      "ff_value": [
+        "46",
+        0
+      ]
+    },
+    "class_type": "ImpactConditionalBranch",
+    "_meta": {
+      "title": "ImpactConditionalBranch"
+    }
+  },
+  "200": {
+    "inputs": {
+      "json_input": [
+        "51",
+        0
+      ],
+      "key": "region_padding"
+    },
+    "class_type": "JSONKeyCheckerNode",
+    "_meta": {
+      "title": "JSON Key Checker"
+    }
+  },
+  "201": {
+    "inputs": {
+      "value": 0
+    },
+    "class_type": "INTConstant",
+    "_meta": {
+      "title": "0"
+    }
+  },
+  "202": {
+    "inputs": {
+      "cond": [
+        "200",
+        0
+      ],
+      "tt_value": [
+        "203",
+        0
+      ],
+      "ff_value": [
+        "201",
+        0
+      ]
+    },
+    "class_type": "ImpactConditionalBranch",
+    "_meta": {
+      "title": "ImpactConditionalBranch"
+    }
+  },
+  "203": {
+    "inputs": {
+      "text": [
+        "200",
+        1
+      ]
+    },
+    "class_type": "JWStringToInteger",
+    "_meta": {
+      "title": "String to Integer"
+    }
+  },
+  "206": {
+    "inputs": {
+      "kind": "RGBA",
+      "image": [
+        "196",
+        0
+      ]
+    },
+    "class_type": "Change Channel Count",
+    "_meta": {
+      "title": "Change Channel Count"
+    }
+  }
+}

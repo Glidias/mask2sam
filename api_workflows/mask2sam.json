@@ -1,0 +1,611 @@
+{
+  "6": {
+    "inputs": {
+      "individual_objects": [
+        "74",
+        0
+      ],
+      "mask": [
+        "39",
+        0
+      ]
+    },
+    "class_type": "MaskToPoints",
+    "_meta": {
+      "title": "📍 Mask to Points"
+    }
+  },
+  "7": {
+    "inputs": {
+      "keep_model_loaded": true,
+      "individual_objects": [
+        "74",
+        0
+      ],
+      "sam2_model": [
+        "9",
+        0
+      ],
+      "image": [
+        "35",
+        0
+      ],
+      "coordinates_positive": [
+        "6",
+        0
+      ],
+      "coordinates_negative": [
+        "6",
+        1
+      ]
+    },
+    "class_type": "Sam2Segmentation",
+    "_meta": {
+      "title": "Sam2Segmentation"
+    }
+  },
+  "9": {
+    "inputs": {
+      "model": "sam2_hiera_large.safetensors",
+      "segmentor": "video",
+      "device": "cuda",
+      "precision": "fp16"
+    },
+    "class_type": "DownloadAndLoadSAM2Model",
+    "_meta": {
+      "title": "(Down)Load SAM2Model"
+    }
+  },
+  "30": {
+    "inputs": {
+      "mask": [
+        "77",
+        0
+      ]
+    },
+    "class_type": "MaskToImage",
+    "_meta": {
+      "title": "Convert Mask to Image"
+    }
+  },
+  "33": {
+    "inputs": {
+      "value": "WORKING_FOLDER_LOCATION"
+    },
+    "class_type": "PrimitiveString",
+    "_meta": {
+      "title": "working folder location"
+    }
+  },
+  "34": {
+    "inputs": {
+      "a": [
+        "33",
+        0
+      ],
+      "b": "/input_src"
+    },
+    "class_type": "JWStringConcat",
+    "_meta": {
+      "title": "String Concatenate"
+    }
+  },
+  "35": {
+    "inputs": {
+      "directory": [
+        "34",
+        0
+      ],
+      "image_load_cap": 0,
+      "start_index": 0,
+      "load_always": true,
+      "sort_method": "Alphabetical (ASC)"
+    },
+    "class_type": "LoadImagesFromDir //Inspire",
+    "_meta": {
+      "title": "Load Image Batch From Dir (Inspire)"
+    }
+  },
+  "37": {
+    "inputs": {
+      "a": [
+        "33",
+        0
+      ],
+      "b": "/input_mask"
+    },
+    "class_type": "JWStringConcat",
+    "_meta": {
+      "title": "String Concatenate"
+    }
+  },
+  "38": {
+    "inputs": {
+      "directory": [
+        "37",
+        0
+      ],
+      "image_load_cap": 0,
+      "start_index": 0,
+      "load_always": true,
+      "sort_method": "Alphabetical (ASC)"
+    },
+    "class_type": "LoadImagesFromDir //Inspire",
+    "_meta": {
+      "title": "Load Image Batch From Dir (Inspire)"
+    }
+  },
+  "39": {
+    "inputs": {
+      "channel": "red",
+      "image": [
+        "38",
+        0
+      ]
+    },
+    "class_type": "ImageToMask",
+    "_meta": {
+      "title": "Convert Image to Mask"
+    }
+  },
+  "40": {
+    "inputs": {
+      "path_pattern": [
+        "41",
+        0
+      ],
+      "start_index": 0,
+      "overwrite": "true",
+      "images": [
+        "30",
+        0
+      ]
+    },
+    "class_type": "JWSaveImageSequence",
+    "_meta": {
+      "title": "Batch Save Image Sequence"
+    }
+  },
+  "41": {
+    "inputs": {
+      "a": [
+        "33",
+        0
+      ],
+      "b": "/output/{:06d}.png"
+    },
+    "class_type": "JWStringConcat",
+    "_meta": {
+      "title": "String Concatenate"
+    }
+  },
+  "46": {
+    "inputs": {
+      "expand": [
+        "64",
+        0
+      ],
+      "incremental_expandrate": 0,
+      "tapered_corners": [
+        "68",
+        0
+      ],
+      "flip_input": false,
+      "blur_radius": 0,
+      "lerp_alpha": 1,
+      "decay_factor": 1,
+      "fill_holes": [
+        "61",
+        0
+      ],
+      "mask": [
+        "83",
+        0
+      ]
+    },
+    "class_type": "GrowMaskWithBlur",
+    "_meta": {
+      "title": "Grow Mask With Blur"
+    }
+  },
+  "50": {
+    "inputs": {
+      "a": [
+        "33",
+        0
+      ],
+      "b": "/meta.json"
+    },
+    "class_type": "JWStringConcat",
+    "_meta": {
+      "title": "String Concatenate"
+    }
+  },
+  "51": {
+    "inputs": {
+      "file_path": [
+        "50",
+        0
+      ],
+      "dictionary_name": "[filename]"
+    },
+    "class_type": "Load Text File",
+    "_meta": {
+      "title": "Load meta.json File"
+    }
+  },
+  "53": {
+    "inputs": {
+      "json_input": [
+        "51",
+        0
+      ],
+      "key": "expand"
+    },
+    "class_type": "JSONKeyCheckerNode",
+    "_meta": {
+      "title": "JSON Key Checker"
+    }
+  },
+  "54": {
+    "inputs": {
+      "json_input": [
+        "51",
+        0
+      ],
+      "key": "tapered_corners"
+    },
+    "class_type": "JSONKeyCheckerNode",
+    "_meta": {
+      "title": "JSON Key Checker"
+    }
+  },
+  "55": {
+    "inputs": {
+      "json_input": [
+        "51",
+        0
+      ],
+      "key": "invert_mask"
+    },
+    "class_type": "JSONKeyCheckerNode",
+    "_meta": {
+      "title": "JSON Key Checker"
+    }
+  },
+  "56": {
+    "inputs": {
+      "json_input": [
+        "51",
+        0
+      ],
+      "key": "fill_holes"
+    },
+    "class_type": "JSONKeyCheckerNode",
+    "_meta": {
+      "title": "JSON Key Checker"
+    }
+  },
+  "57": {
+    "inputs": {
+      "text": [
+        "56",
+        1
+      ]
+    },
+    "class_type": "CR String To Boolean",
+    "_meta": {
+      "title": "🔧 CR String To Boolean"
+    }
+  },
+  "58": {
+    "inputs": {
+      "text": [
+        "55",
+        1
+      ]
+    },
+    "class_type": "CR String To Boolean",
+    "_meta": {
+      "title": "🔧 CR String To Boolean"
+    }
+  },
+  "59": {
+    "inputs": {
+      "cond": [
+        "55",
+        0
+      ],
+      "tt_value": [
+        "58",
+        0
+      ],
+      "ff_value": [
+        "60",
+        0
+      ]
+    },
+    "class_type": "ImpactConditionalBranch",
+    "_meta": {
+      "title": "ImpactConditionalBranch"
+    }
+  },
+  "60": {
+    "inputs": {
+      "value": true
+    },
+    "class_type": "BOOLConstant",
+    "_meta": {
+      "title": "true"
+    }
+  },
+  "61": {
+    "inputs": {
+      "cond": [
+        "56",
+        0
+      ],
+      "tt_value": [
+        "57",
+        0
+      ],
+      "ff_value": [
+        "56",
+        0
+      ]
+    },
+    "class_type": "ImpactConditionalBranch",
+    "_meta": {
+      "title": "ImpactConditionalBranch"
+    }
+  },
+  "63": {
+    "inputs": {
+      "value": 0
+    },
+    "class_type": "INTConstant",
+    "_meta": {
+      "title": "0"
+    }
+  },
+  "64": {
+    "inputs": {
+      "cond": [
+        "53",
+        0
+      ],
+      "tt_value": [
+        "65",
+        0
+      ],
+      "ff_value": [
+        "63",
+        0
+      ]
+    },
+    "class_type": "ImpactConditionalBranch",
+    "_meta": {
+      "title": "ImpactConditionalBranch"
+    }
+  },
+  "65": {
+    "inputs": {
+      "text": [
+        "53",
+        1
+      ]
+    },
+    "class_type": "JWStringToInteger",
+    "_meta": {
+      "title": "String to Integer"
+    }
+  },
+  "67": {
+    "inputs": {
+      "text": [
+        "54",
+        1
+      ]
+    },
+    "class_type": "CR String To Boolean",
+    "_meta": {
+      "title": "🔧 CR String To Boolean"
+    }
+  },
+  "68": {
+    "inputs": {
+      "cond": [
+        "54",
+        0
+      ],
+      "tt_value": [
+        "67",
+        0
+      ],
+      "ff_value": [
+        "54",
+        0
+      ]
+    },
+    "class_type": "ImpactConditionalBranch",
+    "_meta": {
+      "title": "ImpactConditionalBranch"
+    }
+  },
+  "71": {
+    "inputs": {
+      "json_input": [
+        "51",
+        0
+      ],
+      "key": "individual_objects"
+    },
+    "class_type": "JSONKeyCheckerNode",
+    "_meta": {
+      "title": "JSON Key Checker"
+    }
+  },
+  "73": {
+    "inputs": {
+      "text": [
+        "71",
+        1
+      ]
+    },
+    "class_type": "CR String To Boolean",
+    "_meta": {
+      "title": "🔧 CR String To Boolean"
+    }
+  },
+  "74": {
+    "inputs": {
+      "cond": [
+        "71",
+        0
+      ],
+      "tt_value": [
+        "73",
+        0
+      ],
+      "ff_value": [
+        "71",
+        0
+      ]
+    },
+    "class_type": "ImpactConditionalBranch",
+    "_meta": {
+      "title": "ImpactConditionalBranch"
+    }
+  },
+  "76": {
+    "inputs": {
+      "mask": [
+        "46",
+        0
+      ]
+    },
+    "class_type": "InvertMask",
+    "_meta": {
+      "title": "InvertMask"
+    }
+  },
+  "77": {
+    "inputs": {
+      "cond": [
+        "59",
+        0
+      ],
+      "tt_value": [
+        "76",
+        0
+      ],
+      "ff_value": [
+        "46",
+        0
+      ]
+    },
+    "class_type": "ImpactConditionalBranch",
+    "_meta": {
+      "title": "ImpactConditionalBranch"
+    }
+  },
+  "78": {
+    "inputs": {
+      "json_input": [
+        "51",
+        0
+      ],
+      "key": "use_bboxes"
+    },
+    "class_type": "JSONKeyCheckerNode",
+    "_meta": {
+      "title": "JSON Key Checker"
+    }
+  },
+  "80": {
+    "inputs": {
+      "cond": [
+        "78",
+        0
+      ],
+      "tt_value": [
+        "81",
+        0
+      ],
+      "ff_value": [
+        "78",
+        0
+      ]
+    },
+    "class_type": "ImpactConditionalBranch",
+    "_meta": {
+      "title": "ImpactConditionalBranch"
+    }
+  },
+  "81": {
+    "inputs": {
+      "text": [
+        "78",
+        1
+      ]
+    },
+    "class_type": "CR String To Boolean",
+    "_meta": {
+      "title": "🔧 CR String To Boolean"
+    }
+  },
+  "82": {
+    "inputs": {
+      "keep_model_loaded": true,
+      "individual_objects": false,
+      "sam2_model": [
+        "9",
+        0
+      ],
+      "image": [
+        "35",
+        0
+      ],
+      "bboxes": [
+        "84",
+        0
+      ]
+    },
+    "class_type": "Sam2Segmentation",
+    "_meta": {
+      "title": "Sam2Segmentation (bboxes instead)"
+    }
+  },
+  "83": {
+    "inputs": {
+      "cond": [
+        "80",
+        0
+      ],
+      "tt_value": [
+        "82",
+        0
+      ],
+      "ff_value": [
+        "7",
+        0
+      ]
+    },
+    "class_type": "ImpactConditionalBranch",
+    "_meta": {
+      "title": "ImpactConditionalBranch"
+    }
+  },
+  "84": {
+    "inputs": {
+      "mask": [
+        "39",
+        0
+      ]
+    },
+    "class_type": "MaskToBBoxes",
+    "_meta": {
+      "title": "📦 Mask to BBoxes"
+    }
+  }
+}
