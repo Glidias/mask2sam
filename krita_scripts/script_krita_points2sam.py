@@ -19,7 +19,7 @@ CLIENT_ID = str(uuid.uuid4())
 def save_input_frames_with_progress(tmpdir, src_layer, active_layer, canvas_dims, start_frame, end_frame):
     """Save input frames with progress dialog (main thread only)"""
     total_frames = end_frame - start_frame + 1
-    
+
     # Create progress dialog
     progress = QProgressDialog("Saving input frames before ComfyUI process...", "Cancel", 0, total_frames)
     progress.setWindowModality(Qt.WindowModal)
@@ -27,27 +27,27 @@ def save_input_frames_with_progress(tmpdir, src_layer, active_layer, canvas_dims
     progress.setAutoClose(True)
     progress.setAutoReset(True)
     progress.show()
-    
+
     try:
         QApplication.processEvents()
-        
+
         # Save source frames
         for i, frame in enumerate(range(start_frame, end_frame + 1)):
             # Update progress
             progress.setValue(i)
             QApplication.processEvents()  # Keep UI responsive
-            
+
             if progress.wasCanceled():
                 return False
                 # raise Exception("User canceled")
-            
+
             # Save source frame
             pixel_data = src_layer.pixelDataAtTime(0, 0, canvas_dims[0], canvas_dims[1], frame) if is_animated_srclayer else src_layer.pixelData(0, 0, canvas_dims[0], canvas_dims[1])
             qimg = QImage(pixel_data, canvas_dims[0], canvas_dims[1], QImage.Format_ARGB32)
             img_path = os.path.join(tmpdir, "input_src", f"frame_{frame:04d}.png")
             if not qimg.save(img_path, "PNG"):
                 raise Exception(f"Failed to save source frame {frame}")
-            
+
         progress.setValue(total_frames)
         return True
     finally:
@@ -104,7 +104,7 @@ class ComfyWorker(QThread):
 
 # check if __file__ is defined (it may not be in some environments)
 if '__file__' not in globals():
-    __file__ = os.path.abspath('C:/ComfyUI/custom_nodes/mask2sam/script_krita.py')
+    __file__ = os.path.abspath('C:/ComfyUI/custom_nodes/mask2sam/script_krita_points2sam.py')
 API_BASE_DIR = os.path.join(os.path.dirname(__file__), "api_workflows")
 
 def find_appropriate_parent_and_target(doc, selected_node, has_masks):
@@ -133,7 +133,7 @@ def find_appropriate_parent_and_target(doc, selected_node, has_masks):
 def qimage_to_rgba8_bytes(qimg):
     if qimg.format() != QImage.Format_RGBA8888:
         qimg = qimg.convertToFormat(QImage.Format_RGBA8888)
-    
+
     # return ptr.asstring(qimg.byteCount()) if ptr else b''
     return QByteArray(qimg.bits().asstring(qimg.byteCount()))
 
@@ -142,7 +142,7 @@ def qimage_to_grayscale_bytes(qimg):
     if qimg.format() != QImage.Format_Grayscale8:
         qimg = qimg.convertToFormat(QImage.Format_Grayscale8)
     return QByteArray(qimg.bits().asstring(qimg.byteCount()))
-   
+
 
 def logErrMessage(msg, title="Script Error"):
     QMessageBox.information(QWidget(), title, msg)
@@ -209,15 +209,15 @@ is_animated_masklayer = active_layer.animated()
 is_animated_srclayer = src_layer.animated()
 if not is_animated_srclayer:
     end_frame = start_frame  # force single frame if src not animated
-    
+
 try:
     tmpdir_unix = tmpdir.replace("\\", "/")
     os.makedirs(os.path.join(tmpdir, "input_src"), exist_ok=True)
     os.makedirs(os.path.join(tmpdir, "output"), exist_ok=True)
-   
+
     # Save frames with progress dialog
     user_canceled = not save_input_frames_with_progress(
-        tmpdir, src_layer, active_layer, 
+        tmpdir, src_layer, active_layer,
         canvas_dimensions, start_frame, end_frame
     )
 
@@ -231,7 +231,7 @@ try:
     }
     with open(os.path.join(tmpdir, "meta.json"), "w") as f:
         json.dump(meta, f)
-   
+
     # Load workflow
     with open(os.path.join(API_BASE_DIR, "api_sam2.json"), "r", encoding="utf-8") as f:
         workflow_str = f.read().replace("WORKING_FOLDER_LOCATION", tmpdir_unix)
@@ -269,20 +269,20 @@ def on_success(tmpdir):
 
     # hack workaround to set base state of animated mask layer to white
     def reset_mask_base_to_white(mask_layer, width, height):
-  
+
         white_image = QImage(width, height, QImage.Format_Grayscale8)
         white_image.fill(255)
         white_data = qimage_to_grayscale_bytes(white_image)
-        
+
         original_time = doc.currentTime()
-        
+
         # Try to find a frame without keyframe
         test_frame = None
         for frame in range(0, 1000):
             if not mask_layer.hasKeyframeAtTime(frame):
                 test_frame = frame
                 break
-        
+
         if test_frame is not None:
             # Found a frame without keyframe - use it for base state
             doc.setCurrentTime(test_frame)
@@ -296,7 +296,7 @@ def on_success(tmpdir):
                     if mask_layer.hasKeyframeAtTime(frame):
                         first_keyframe = frame
                         break
-                
+
                 if first_keyframe is not None:
                     # Store the first keyframe data
                     first_data = mask_layer.pixelDataAtTime(0, 0, width, height, first_keyframe)
@@ -304,14 +304,14 @@ def on_success(tmpdir):
                     mask_layer.setCurrentTime(first_keyframe)
                     # Unfortunately, Krita doesn't have a direct way to clear single keyframe
                     # So we'll use a different approach
-                    
+
                     # Alternative: Set base state on a frame outside normal range
                     doc.setCurrentTime(9999)  # Use a very high frame number
                     mask_layer.setPixelData(white_data, 0, 0, width, height)
                     # Then restore the first keyframe
                     doc.setCurrentTime(first_keyframe)
                     mask_layer.setPixelData(first_data, 0, 0, width, height)
-        
+
         doc.setCurrentTime(original_time)
 
 
@@ -319,7 +319,7 @@ def on_success(tmpdir):
         add_blank_frame = app.action('add_blank_frame')
         # fill full white 255,255,255
         new_layer = active_layer
-        
+
         # confirm new_layer is transparencymask
         if new_layer.type() != "transparencymask":
             # logAndRaiseErrMessage("Failed to create new transparency mask layer:" + new_layer.type())
@@ -328,16 +328,16 @@ def on_success(tmpdir):
             if active_view:
                 active_view.showFloatingMessage("Failed to create new transparency mask layer:" + new_layer.type(),  app.icon("16_light_info"), 4000, 1)
             return
-        
+
         #white_image = QImage(doc_width, doc_height, QImage.Format_Grayscale8)
         # white_image.fill(255)
         #white_data = qimage_to_grayscale_bytes(white_image)
         original_time = doc.currentTime()
-        #doc.setCurrentTime(0)  
+        #doc.setCurrentTime(0)
         #new_layer.setPixelData(white_data, 0, 0, doc_width, doc_height)
 
         reset_mask_base_to_white(new_layer, doc_width, doc_height)
-            
+
         for i, img_name in enumerate(output_images):
             frame_num = start_frame + i
             doc.setCurrentTime(frame_num)
@@ -357,9 +357,9 @@ def on_success(tmpdir):
             new_layer.setPixelData(pixel_data, 0, 0, qimg.width(), qimg.height())
 
         doc.setCurrentTime(original_time)
-        
+
         doc.refreshProjection()
-    
+
     if active_layer.animated():
         QTimer.singleShot(0, create_keyframes)
     else:

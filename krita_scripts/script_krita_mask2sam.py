@@ -114,7 +114,7 @@ class ComfyWorker(QThread):
 
 # check if __file__ is defined (it may not be in some environments)
 if '__file__' not in globals():
-    __file__ = os.path.abspath('C:/ComfyUI/custom_nodes/mask2sam/script_krita.py')
+    __file__ = os.path.abspath('C:/ComfyUI/custom_nodes/mask2sam/script_krita_mask2sam.py')
 API_BASE_DIR = os.path.join(os.path.dirname(__file__), "api_workflows")
 
 def find_appropriate_parent_and_target(doc, selected_node, has_masks):
@@ -229,7 +229,7 @@ try:
         json.dump(meta, f)
 
     # Load workflow
-    with open(os.path.join(API_BASE_DIR, "mask2sam.json"), "r", encoding="utf-8") as f:
+    with open(os.path.join(API_BASE_DIR, "api_mask2sam.json"), "r", encoding="utf-8") as f:
         workflow_str = f.read().replace("WORKING_FOLDER_LOCATION", tmpdir_unix)
         if start_frame == end_frame: # to keep consisent as video instead?
             workflow_str = workflow_str.replace('"segmentor": "video"', '"segmentor": "single_image"')
