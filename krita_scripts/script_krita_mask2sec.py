@@ -135,7 +135,7 @@ class ComfyWorker(QThread):
 
 # check if __file__ is defined (it may not be in some environments)
 if '__file__' not in globals():
-    __file__ = os.path.abspath('C:/ComfyUI/custom_nodes/mask2sam/script_krita_mask2sec.py')
+    __file__ = os.path.abspath('C:/ComfyUI/custom_nodes/mask2sam/krita_scripts/script_krita_mask2sec.py')
 API_BASE_DIR = os.path.join(os.path.dirname(__file__), "api_workflows")
 
 def find_appropriate_parent_and_target(doc, selected_node, has_masks):
