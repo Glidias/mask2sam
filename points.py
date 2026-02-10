@@ -20,6 +20,27 @@ class MaskToPosNegPoints:
     FUNCTION = "mask_to_points"
     CATEGORY = "SAM2/utils"
 
+    def extract_points_from_mask(self, binary_mask, use_contours=True):
+        """Unified point extraction for both positive/negative regions."""
+        labels = measure.label(binary_mask.astype(np.uint8), connectivity=2)
+        points = []
+        
+        for region in measure.regionprops(labels):
+            if use_contours and region.area >= 9:
+                region_mask = (labels == region.label)
+                contours = measure.find_contours(region_mask.astype(np.float32), 0.5)
+                if contours:
+                    main_contour = max(contours, key=lambda c: len(c))
+                    contour_xy = np.fliplr(main_contour)
+                    pt = self.get_reference_point_from_contour(contour_xy)
+                    points.append(pt)
+                    continue
+            
+            cy, cx = region.centroid
+            points.append((float(cx), float(cy)))
+        
+        return points
+
     def get_reference_point_from_contour(self, contour):
         """Use bayazit_decomp to get centroid of largest convex piece."""
         if len(contour) < 3:
@@ -67,65 +88,53 @@ class MaskToPosNegPoints:
 
     def mask_to_points(self, mask, individual_objects=True):
         """
-        Convert batch of masks to positive/negative points.
-        - mask: (B, H, W)
-        - Black (0) = positive
-        - Gray (0 < val < 255) = negative
-        - White (255) = ignored (optional: enforce via neg_mask = (0 < mask < 255))
+        EXACT REVERSE SEMANTICS (your specification):
+          uint8:   0 = POSITIVE (black/object to keep)
+                   1-254 = NEGATIVE (gray/background to exclude)
+                   255 = IGNORED (white/neutral)
+                   
+          float:   0.0 = POSITIVE
+                   0.0 < x < 1.0 = NEGATIVE
+                   1.0 = IGNORED
         """
         B, H, W = mask.shape
-        pos_points = []
-        neg_points = []
+        all_pos_points = []
+        all_neg_points = []
 
         for b in range(B):
             mask_np = mask[b].cpu().numpy()
-
-            # Positive: black (0)
-            pos_mask = (mask_np == 0)
-            # Negative: gray only (0 < x < 255), exclude white
-            neg_mask = (mask_np > 0) & (mask_np < 255)
-
-            # --- Process positive regions ---
-            pos_labels = measure.label(pos_mask, connectivity=2)
-            regionprops = measure.regionprops(pos_labels)
-            print(f"Found {len(regionprops)} positive regions in batch item {b}")
-            for region in regionprops:
-                region_mask = (pos_labels == region.label)
-                contours = measure.find_contours(region_mask, 0.5)
-                if contours:
-                    # Use largest contour by length (or area if you implement it)
-                    main_contour = max(contours, key=lambda c: len(c))
-                    contour_xy = np.fliplr(main_contour)  # (col, row)
-                    ref_pt = self.get_reference_point_from_contour(contour_xy)
-                    pos_points.append(ref_pt)
-
-            # --- Process negative regions ---
-            neg_labels = measure.label(neg_mask, connectivity=2)
-            for region in measure.regionprops(neg_labels):
-                cy, cx = region.centroid
-                neg_points.append((float(cx), float(cy)))
-
-        # --- Handle individual_objects mode ---
-        if individual_objects:
-            if not neg_points:
-                neg_points = []
+            
+            # === DETECT MASK TYPE ===
+            is_uint8 = mask_np.max() > 1.5
+            
+            if is_uint8:
+                pos_mask = (mask_np == 0)
+                neg_mask = (mask_np > 2) & (mask_np < 253)
             else:
-                # Pair each positive with closest negative (reuse allowed)
-                paired_neg = []
-                for p in pos_points:
-                    distances = [(p[0]-n[0])**2 + (p[1]-n[1])**2 for n in neg_points]
-                    closest_neg = neg_points[int(np.argmin(distances))]
-                    paired_neg.append(closest_neg)
-                neg_points = paired_neg
+                pos_mask = (mask_np <= 0.0)      # Pure black only
+                neg_mask = (mask_np > 0.01) & (mask_np < 0.99)  # Strict mid-values only
 
-        # --- Format for Kijai ---
-        pos_dicts = [{"x": x, "y": y} for (x, y) in pos_points]
-        neg_dicts = [{"x": x, "y": y} for (x, y) in neg_points]
+            pos_points = self.extract_points_from_mask(pos_mask, use_contours=True)
+            neg_points = self.extract_points_from_mask(
+                neg_mask, 
+                use_contours=True
+            )
 
-        pos_str = json.dumps(pos_dicts)
-        neg_str = json.dumps(neg_dicts)
+            all_pos_points.extend(pos_points)
+            all_neg_points.extend(neg_points)
 
-        print("Positive points:", pos_str)
-        print("Negative points:", neg_str)
+        # === STRICT PAIRING (no fallbacks) ===
+        if individual_objects and all_pos_points and all_neg_points:
+            # Only pair if negatives exist
+            paired_neg = []
+            for p in all_pos_points:
+                distances = [(p[0]-n[0])**2 + (p[1]-n[1])**2 for n in all_neg_points]
+                closest_neg = all_neg_points[int(np.argmin(distances))]
+                paired_neg.append(closest_neg)
+            all_neg_points = paired_neg
+
+        # Format output
+        pos_str = json.dumps([{"x": round(x, 2), "y": round(y, 2)} for x, y in all_pos_points])
+        neg_str = json.dumps([{"x": round(x, 2), "y": round(y, 2)} for x, y in all_neg_points])
 
         return (pos_str, neg_str)
