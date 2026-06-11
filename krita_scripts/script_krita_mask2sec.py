@@ -272,7 +272,7 @@ try:
     with open(os.path.join(API_BASE_DIR, "api_tmpl_folder_sec.json"), "r", encoding="utf-8") as f:
         workflow_str = f.read().replace("WORKING_FOLDER_LOCATION", tmpdir_unix)
     workflow = json.loads(workflow_str)
-    print(f"✅set up temp dir: with files saved {tmpdir}", "ss")
+    print(f"[OK] set up temp dir: with files saved {tmpdir}")
 except Exception as e:
     print("clearing up tempdir due to error before Worker:" + str(e))
     shutil.rmtree(tmpdir, ignore_errors=True)

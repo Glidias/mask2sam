@@ -234,7 +234,7 @@ try:
         if start_frame == end_frame: # to keep consisent as video instead?
             workflow_str = workflow_str.replace('"segmentor": "video"', '"segmentor": "single_image"')
     workflow = json.loads(workflow_str)
-    print(f"✅set up temp dir: with files saved {tmpdir}", "ss")
+    print(f"[OK] set up temp dir: with files saved {tmpdir}")
 except Exception as e:
     print("clearing up tempdir due to error before Worker:" + str(e))
     shutil.rmtree(tmpdir, ignore_errors=True)

@@ -249,7 +249,7 @@ class PointsEditorDialog(QDialog):
         self.load_background()
 
         if self.auto_load():
-            print("✅ Auto-loaded previously saved points.")
+            print("[OK] Auto-loaded previously saved points.")
 
     def setup_ui(self):
         main_layout = QVBoxLayout()
@@ -360,6 +360,7 @@ class PointsEditorDialog(QDialog):
                     pos_pts = data.get("coordinates_positive", [])
                     neg_pts = data.get("coordinates_negative", [])
                     self.canvas.load_points_from_export(pos_pts, neg_pts)
+                    print("[OK] Auto-loaded previously saved points.")
                     return True
         except:
             pass
@@ -441,8 +442,8 @@ else:
     points = dialog.get_result()
     if points is not None:
         pos_points, neg_points = points
-        print(f"✅ OK clicked! Positive points: {pos_points}")
-        print(f"✅ OK clicked! Negative points: {neg_points}")
+        print(f"[OK] OK clicked! Positive points: {pos_points}")
+        print(f"[OK] OK clicked! Negative points: {neg_points}")
     else:
         if result == QDialog.Rejected:
             print("CloseOperation: Close button clicked (auto-saved, no points returned)")
